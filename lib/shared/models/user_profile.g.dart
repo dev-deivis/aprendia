@@ -1,0 +1,54 @@
+// GENERATED CODE — generado manualmente (hive_generator incompatible con Dart 3.11)
+// Equivalente exacto al output de hive_generator para UserProfile con typeId: 0
+
+part of 'user_profile.dart';
+
+// **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
+
+class UserProfileAdapter extends TypeAdapter<UserProfile> {
+  @override
+  final int typeId = 0;
+
+  @override
+  UserProfile read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return UserProfile(
+      name: fields[0] as String,
+      educationLevelIndex: fields[1] as int,
+      completedSessions: fields[2] as int,
+      createdAt: fields[3] as DateTime,
+      lastSessionAt: fields[4] as DateTime?,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, UserProfile obj) {
+    writer
+      ..writeByte(5)
+      ..writeByte(0)
+      ..write(obj.name)
+      ..writeByte(1)
+      ..write(obj.educationLevelIndex)
+      ..writeByte(2)
+      ..write(obj.completedSessions)
+      ..writeByte(3)
+      ..write(obj.createdAt)
+      ..writeByte(4)
+      ..write(obj.lastSessionAt);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is UserProfileAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
