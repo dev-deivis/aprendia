@@ -145,11 +145,7 @@ class OnboardingScreen extends ConsumerWidget {
             ),
           ),
           // Barra de navegación persistente en la parte inferior
-          AppBottomNavBar(
-            onReplay: () {},
-            onMic: () {},
-            onHelp: () {},
-          ),
+          const AppBottomNavBar(),
         ],
       ),
     );

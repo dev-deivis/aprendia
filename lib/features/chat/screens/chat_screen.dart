@@ -47,23 +47,32 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final chatState = ref.watch(chatProvider(widget.level));
     final chatNotifier = ref.read(chatProvider(widget.level).notifier);
 
-    // Escuchar nuevos mensajes para que el avatar hable
+    // Escuchar nuevos mensajes para que el avatar hable o hacer scroll
     ref.listen(chatProvider(widget.level), (previous, next) {
-      if (previous != null && next.messages.length > previous.messages.length) {
+      if (previous == null) return;
+      
+      final responseArrived = previous.isLoading && !next.isLoading;
+      final newMessageAdded = next.messages.length > previous.messages.length;
+      
+      // Si llegó respuesta, hacer que hable
+      if (responseArrived && next.messages.isNotEmpty) {
         final lastMsg = next.messages.last;
         if (!lastMsg.isLoading && lastMsg.role == MessageRole.assistant) {
           _avatarKey.currentState?.hablar(lastMsg.content);
-          // Scroll al final
-          Future.delayed(const Duration(milliseconds: 100), () {
-            if (scrollController.hasClients) {
-              scrollController.animateTo(
-                scrollController.position.maxScrollExtent,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeOut,
-              );
-            }
-          });
         }
+      }
+
+      // Si llegó respuesta o se agregó un mensaje, hacer scroll al final
+      if (responseArrived || newMessageAdded) {
+        Future.delayed(const Duration(milliseconds: 100), () {
+          if (scrollController.hasClients) {
+            scrollController.animateTo(
+              scrollController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            );
+          }
+        });
       }
     });
 
@@ -132,9 +141,19 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           ),
 
           AppBottomNavBar(
-            onReplay: () {},
-            onMic: () {},
-            onHelp: () {},
+            onBack: () => Navigator.pushReplacementNamed(context, AppRoutes.onboarding),
+            onReplay: () {
+              final messages = ref.read(chatProvider(widget.level)).messages;
+              if (messages.isNotEmpty) {
+                for (int i = messages.length - 1; i >= 0; i--) {
+                  final msg = messages[i];
+                  if (msg.role == MessageRole.assistant && !msg.isLoading) {
+                    _avatarKey.currentState?.hablar(msg.content);
+                    break;
+                  }
+                }
+              }
+            },
           ),
         ],
       ),
