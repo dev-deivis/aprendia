@@ -8,8 +8,10 @@ import '../../../shared/widgets/tutor_avatar.dart';
 import '../providers/chat_provider.dart';
 import '../widgets/message_bubble.dart';
 import '../widgets/chat_input.dart';
+import '../widgets/maestra_avatar.dart';
+import '../../../shared/models/message.dart';
 
-class ChatScreen extends ConsumerWidget {
+class ChatScreen extends ConsumerStatefulWidget {
   final EducationLevel level;
 
   const ChatScreen({super.key, required this.level});
@@ -18,17 +20,30 @@ class ChatScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final chatState = ref.watch(chatProvider(level));
     final chatNotifier = ref.read(chatProvider(level).notifier);
-    // Controlador para hacer scroll automático al llegar mensajes nuevos
-    final scrollController = ScrollController();
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      appBar: AppBar(
+        title: Column(
+          children: [
+            const Text(AppStrings.chatTitle),
+            Text(
+              level.displayName,
+              style: const TextStyle(fontSize: 12, color: Colors.white70),
+            ),
+          ],
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person_outline),
+            tooltip: 'Mi perfil',
+            onPressed: () =>
+                Navigator.pushNamed(context, AppRoutes.profile),
+          ),
+        ],
+      ),
       body: Column(
         children: [
-          // AppBar personalizada sin usar el AppBar de Material
-          _buildAppBar(context),
-
-          // Banner de error flotante que se puede cerrar
+          // Banner de error — altura fija para no desbordarse
           if (chatState.error != null)
             Material(
               color: AppColors.error,
