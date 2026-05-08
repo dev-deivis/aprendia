@@ -27,7 +27,7 @@ class ProfileScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Avatar con inicial del nombre
+                // Avatar circular con inicial del nombre del usuario
                 Center(
                   child: Container(
                     width: 80,
@@ -42,7 +42,7 @@ class ProfileScreen extends ConsumerWidget {
                             ? profile.name[0].toUpperCase()
                             : '?',
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: AppColors.onPrimary,
                           fontSize: 36,
                           fontWeight: FontWeight.bold,
                         ),
@@ -57,6 +57,7 @@ class ProfileScreen extends ConsumerWidget {
                     style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
+                      color: AppColors.onSurface,
                     ),
                   ),
                 ),
@@ -81,6 +82,7 @@ class ProfileScreen extends ConsumerWidget {
   }
 }
 
+/// Fila de información del perfil con ícono, etiqueta y valor
 class _InfoRow extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -102,14 +104,15 @@ class _InfoRow extends StatelessWidget {
           '$label: ',
           style: const TextStyle(
             fontWeight: FontWeight.w500,
-            color: AppColors.textSecondary,
+            // Usa la variante de superficie en lugar de textSecondary eliminado
+            color: AppColors.onSurfaceVariant,
           ),
         ),
         Text(
           value,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
+            color: AppColors.onSurface,
           ),
         ),
       ],

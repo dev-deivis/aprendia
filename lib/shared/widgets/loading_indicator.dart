@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 
-/// Indicador de carga con tres puntos animados (estilo "escribiendo...")
+/// Indicador de carga con tres puntos animados — estilo "escribiendo..."
+/// Usado dentro de las burbujas de la tutora mientras la IA responde.
 class LoadingIndicator extends StatefulWidget {
   const LoadingIndicator({super.key});
 
@@ -38,6 +39,7 @@ class _LoadingIndicatorState extends State<LoadingIndicator>
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: List.generate(3, (index) {
+            // Cada punto tiene un desfase de 1/3 del ciclo para el efecto escalonado
             final delay = index * 0.33;
             final opacity =
                 ((_animation.value - delay) % 1.0).clamp(0.0, 1.0);
@@ -47,7 +49,8 @@ class _LoadingIndicatorState extends State<LoadingIndicator>
                 opacity: opacity < 0.5 ? opacity * 2 : (1 - opacity) * 2,
                 child: const CircleAvatar(
                   radius: 5,
-                  backgroundColor: AppColors.textSecondary,
+                  // Usa el color de outline de la nueva paleta teal
+                  backgroundColor: AppColors.outline,
                 ),
               ),
             );
