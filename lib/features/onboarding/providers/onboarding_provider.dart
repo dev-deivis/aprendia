@@ -30,8 +30,8 @@ class OnboardingState {
     );
   }
 
-  bool get isValid =>
-      name.trim().length >= 2 && selectedLevel != null;
+  // El nombre ya no se captura en la UI — solo se requiere el nivel
+  bool get isValid => selectedLevel != null;
 }
 
 /// Proveedor del onboarding con Riverpod
@@ -49,7 +49,7 @@ class OnboardingNotifier extends StateNotifier<OnboardingState> {
   /// Guarda el perfil en Hive y regresa true si fue exitoso
   Future<bool> saveProfile() async {
     if (!state.isValid) {
-      state = state.copyWith(error: 'Por favor completa todos los campos.');
+      state = state.copyWith(error: 'Por favor selecciona tu nivel educativo.');
       return false;
     }
 
@@ -58,7 +58,7 @@ class OnboardingNotifier extends StateNotifier<OnboardingState> {
     try {
       final box = await Hive.openBox<UserProfile>('user_profile');
       final profile = UserProfile(
-        name: state.name.trim(),
+        name: state.name.trim().isEmpty ? 'Estudiante' : state.name.trim(),
         educationLevelIndex: state.selectedLevel!.index,
       );
       await box.put('current', profile);

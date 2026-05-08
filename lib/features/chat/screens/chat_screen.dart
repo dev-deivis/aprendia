@@ -82,7 +82,6 @@ class ChatScreen extends ConsumerWidget {
             isLoading: chatState.isLoading,
           ),
 
-          // Barra de navegación inferior persistente
           AppBottomNavBar(
             onReplay: () {},
             onMic: () {},

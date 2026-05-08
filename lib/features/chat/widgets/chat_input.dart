@@ -122,21 +122,6 @@ class _LevelAwareChatInputState extends State<LevelAwareChatInput> {
         top: false,
         child: Row(
           children: [
-            // Ícono de micrófono como acceso rápido a voz (placeholder)
-            Container(
-              width: 48,
-              height: 48,
-              decoration: const BoxDecoration(
-                color: AppColors.primaryFixed,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.mic_rounded,
-                color: AppColors.primary,
-                size: 24,
-              ),
-            ),
-            const SizedBox(width: 10),
             Expanded(
               child: TextField(
                 controller: _controller,
