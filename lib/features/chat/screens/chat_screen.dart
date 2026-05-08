@@ -21,7 +21,7 @@ class ChatScreen extends ConsumerStatefulWidget {
 }
 
 class _ChatScreenState extends ConsumerState<ChatScreen> {
-  final GlobalKey<MaestraLuzState> _avatarKey = GlobalKey<MaestraLuzState>();
+  final GlobalKey<XoloAvatarState> _avatarKey = GlobalKey<XoloAvatarState>();
   final ScrollController scrollController = ScrollController();
 
   @override
@@ -87,7 +87,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Center(
-              child: MaestraLuz(key: _avatarKey, size: 140),
+              child: XoloAvatar(key: _avatarKey, size: 140),
             ),
           ),
           // Banner de error — altura fija para no desbordarse
