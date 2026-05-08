@@ -50,3 +50,4 @@ lib/shared/services/claude_service.dart
 # Archivos locales de herramientas de desarrollo
 .claude/
 graphify-out/
+CLAUDE.md
