@@ -3,7 +3,7 @@ class AppStrings {
   AppStrings._();
 
   static const String appName = 'Aprendía';
-  static const String appTagline = 'Tu tutora para seguir aprendiendo';
+  static const String appTagline = 'Tu tutor para seguir aprendiendo';
 
   // Onboarding
   static const String onboardingTitle = '¡Bienvenido o bienvenida!';
@@ -23,12 +23,12 @@ class AppStrings {
   static const String nameLabel = 'Tu nombre';
 
   // Chat
-  static const String chatTitle = 'Tu tutora';
+  static const String chatTitle = 'Xolo';
   static const String chatInputHint = 'Escribe tu pregunta...';
   static const String chatWelcome =
-      '¡Hola! Soy tu tutora Aprendía. Estoy aquí para ayudarte a aprender. '
+      '¡Hola! Soy Xolo, tu tutor. Estoy aquí para ayudarte a aprender. '
       '¿Sobre qué tema quieres trabajar hoy?';
-  static const String chatThinking = 'Tu tutora está pensando...';
+  static const String chatThinking = 'Xolo está pensando...';
   static const String sendButton = 'Enviar';
 
   // Profile
