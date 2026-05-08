@@ -46,3 +46,7 @@ app.*.map.json
 
 # API keys — cada desarrollador pone la suya localmente
 lib/shared/services/claude_service.dart
+
+# Archivos locales de herramientas de desarrollo
+.claude/
+graphify-out/
