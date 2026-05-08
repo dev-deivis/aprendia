@@ -8,43 +8,93 @@ import '../../../shared/widgets/tutor_avatar.dart';
 import '../providers/chat_provider.dart';
 import '../widgets/message_bubble.dart';
 import '../widgets/chat_input.dart';
+import '../widgets/maestra_avatar.dart';
+import '../../../shared/models/message.dart';
 
-class ChatScreen extends ConsumerWidget {
+class ChatScreen extends ConsumerStatefulWidget {
   final EducationLevel level;
 
   const ChatScreen({super.key, required this.level});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final chatState = ref.watch(chatProvider(level));
-    final chatNotifier = ref.read(chatProvider(level).notifier);
-    // Controlador para hacer scroll automático al llegar mensajes nuevos
-    final scrollController = ScrollController();
+  ConsumerState<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends ConsumerState<ChatScreen> {
+  final GlobalKey<MaestraLuzState> _avatarKey = GlobalKey<MaestraLuzState>();
+  final ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Hablar el primer mensaje al abrir la pantalla
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final messages = ref.read(chatProvider(widget.level)).messages;
+      if (messages.isNotEmpty && messages.first.role == MessageRole.assistant) {
+        _avatarKey.currentState?.hablar(messages.first.content);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final chatState = ref.watch(chatProvider(widget.level));
+    final chatNotifier = ref.read(chatProvider(widget.level).notifier);
+
+    // Escuchar nuevos mensajes para que el avatar hable
+    ref.listen(chatProvider(widget.level), (previous, next) {
+      if (previous != null && next.messages.length > previous.messages.length) {
+        final lastMsg = next.messages.last;
+        if (!lastMsg.isLoading && lastMsg.role == MessageRole.assistant) {
+          _avatarKey.currentState?.hablar(lastMsg.content);
+          // Scroll al final
+          Future.delayed(const Duration(milliseconds: 100), () {
+            if (scrollController.hasClients) {
+              scrollController.animateTo(
+                scrollController.position.maxScrollExtent,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOut,
+              );
+            }
+          });
+        }
+      }
+    });
 
     return Scaffold(
-      backgroundColor: AppColors.surface,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(56),
+        child: _buildAppBar(context),
+      ),
       body: Column(
         children: [
-          // AppBar personalizada sin usar el AppBar de Material
-          _buildAppBar(context),
-
-          // Banner de error flotante que se puede cerrar
+          // Avatar de la tutora animada
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Center(
+              child: MaestraLuz(key: _avatarKey, size: 140),
+            ),
+          ),
+          // Banner de error — altura fija para no desbordarse
           if (chatState.error != null)
             Material(
               color: AppColors.error,
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Row(
                   children: [
-                    const Icon(Icons.error_outline,
-                        color: Colors.white, size: 16),
+                    const Icon(Icons.error_outline, color: Colors.white, size: 16),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         chatState.error!,
-                        style: const TextStyle(
-                            color: Colors.white, fontSize: 13),
+                        style: const TextStyle(color: Colors.white, fontSize: 13),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -52,8 +102,7 @@ class ChatScreen extends ConsumerWidget {
                     // Botón para descartar el error
                     GestureDetector(
                       onTap: chatNotifier.clearError,
-                      child: const Icon(Icons.close,
-                          color: Colors.white, size: 18),
+                      child: const Icon(Icons.close, color: Colors.white, size: 18),
                     ),
                   ],
                 ),
@@ -69,7 +118,7 @@ class ChatScreen extends ConsumerWidget {
               itemBuilder: (context, index) {
                 return MessageBubble(
                   message: chatState.messages[index],
-                  level: level,
+                  level: widget.level,
                 );
               },
             ),
@@ -77,7 +126,7 @@ class ChatScreen extends ConsumerWidget {
 
           // Input adaptado al nivel educativo del usuario
           LevelAwareChatInput(
-            level: level,
+            level: widget.level,
             onSend: chatNotifier.sendMessage,
             isLoading: chatState.isLoading,
           ),
@@ -104,8 +153,7 @@ class ChatScreen extends ConsumerWidget {
           children: [
             // Botón de regreso al onboarding para cambiar nivel
             GestureDetector(
-              onTap: () => Navigator.pushReplacementNamed(
-                  context, AppRoutes.onboarding),
+              onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.onboarding),
               child: const Icon(
                 Icons.arrow_back_rounded,
                 color: AppColors.primary,
@@ -131,7 +179,7 @@ class ChatScreen extends ConsumerWidget {
                     ),
                   ),
                   Text(
-                    level.displayName,
+                    widget.level.displayName,
                     style: const TextStyle(
                       fontSize: 12,
                       color: AppColors.onSurfaceVariant,
