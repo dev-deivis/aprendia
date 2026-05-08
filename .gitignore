@@ -51,3 +51,11 @@ lib/shared/services/claude_service.dart
 .claude/
 graphify-out/
 CLAUDE.md
+
+# Carpetas de referencia y diseño (no forman parte del proyecto Flutter)
+Recursos/
+VistasAlfabetizar/
+VistasPrimaria/
+VistasSecundaria/
+General/
+stitch_acompa_a_ai_literacy_tutor/
